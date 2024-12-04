@@ -1,0 +1,42 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+# Node.js setup
+- task: UseNode@2
+  inputs:
+    versionSpec: '14.x'
+    addToPath: true
+
+# Install dependencies for backend
+- task: Npm@1
+  inputs:
+    command: 'install'
+    workingDirectory: 'backend'
+
+# Install dependencies for frontend
+- task: Npm@1
+  inputs:
+    command: 'install'
+    workingDirectory: 'frontend'
+
+# Run tests (optional)
+- task: Npm@1
+  inputs:
+    command: 'test'
+    workingDirectory: 'backend'
+
+# Deploy to Azure Web App (optional)
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'Azure Subscription'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az webapp up --name $(webAppName) --resource-group $(resourceGroup) --sku B1 --location "Central US" --source-path $(Build.ArtifactStagingDirectory)
+
