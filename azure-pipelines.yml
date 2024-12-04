@@ -8,7 +8,7 @@ pool:
 
 steps:
 # Node.js setup
-- task: UseNode@2
+- task: UseNode@1
   inputs:
     versionSpec: '14.x'
     addToPath: true
